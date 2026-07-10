@@ -161,7 +161,8 @@
     .quote-mark { font-family:Georgia,serif; font-size:52px; color:var(--cyan); line-height:1; margin-bottom:16px; }
     .testimonial-card blockquote { font-style:italic; font-size:14px; color:var(--muted); line-height:1.75; margin-bottom:28px; }
     .testimonial-author { display:flex; align-items:center; gap:14px; }
-    .author-avatar { width:46px; height:46px; border-radius:50%; background:var(--teal2); border:2px solid rgba(0,212,255,0.25); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .author-avatar { width:46px; height:46px; border-radius:50%; background:var(--teal2); border:2px solid rgba(0,212,255,0.25); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; overflow:hidden; }
+    .author-avatar img { width:100%; height:100%; object-fit:cover; }
     .author-name { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:700; color:var(--white); }
     .author-role { font-size:12px; color:var(--muted); margin-top:2px; }
     .carousel-dots { display:flex; justify-content:center; gap:8px; margin-top:32px; }
@@ -490,6 +491,16 @@
         <div class="quote-mark">"</div>
         <blockquote>Lo que más valoro es el acompañamiento. No solo hacen el trabajo y ya; explican, proponen y se involucran de verdad con el crecimiento de la marca. Muy recomendados para cualquier negocio que quiera crecer en digital.</blockquote>
         <div class="testimonial-author"><div class="author-avatar">📻</div><div><div class="author-name">Dirección Comercial</div><div class="author-role">Pa'Colombia Stereo</div></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="quote-mark">"</div>
+        <blockquote>Nuestra marca ha crecido con ustedes de una forma orgánica, con clientes 100% orgánicos y fidelizados, que era justamente lo que buscábamos. En estos dos meses el servicio ha sido increíble.</blockquote>
+        <div class="testimonial-author"><div class="author-avatar">🍽️</div><div><div class="author-name">Raíz de Autor</div><div class="author-role">Cocina Latina de Autor · CDMX</div></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="quote-mark">"</div>
+        <blockquote>Buscábamos quién definiera y entendiera nuestros gustos, y finalmente lo encontramos: eficaces, rápidos y 100% confiables. Amamos su trabajo.</blockquote>
+        <div class="testimonial-author"><div class="author-avatar">🍧</div><div><div class="author-name">Twins Ice</div><div class="author-role">Food Truck · CDMX</div></div></div>
       </div>
     </div>
     <div class="carousel-dots" id="carouselDots"></div>
