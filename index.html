@@ -145,9 +145,12 @@
 
     /* CLIENTES */
     #clientes { background:#080d12; text-align:center; }
-    .clientes-logos { display:flex; justify-content:center; align-items:center; gap:28px; flex-wrap:wrap; margin-top:48px; }
-    .cliente-logo { width:96px; height:96px; border-radius:50%; border:2px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; font-family:'Orbitron',sans-serif; font-size:7px; font-weight:700; letter-spacing:1px; color:var(--muted); text-align:center; line-height:1.4; padding:12px; transition:border-color 0.3s,color 0.3s; }
+    .clientes-marquee { position:relative; margin-top:48px; overflow:hidden; width:100%; -webkit-mask-image:linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%); mask-image:linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%); }
+    .clientes-track { display:flex; align-items:center; gap:28px; width:max-content; animation:clientesScroll 28s linear infinite; }
+    .clientes-marquee:hover .clientes-track { animation-play-state:paused; }
+    .cliente-logo { width:96px; height:96px; flex-shrink:0; border-radius:50%; border:2px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; font-family:'Orbitron',sans-serif; font-size:7px; font-weight:700; letter-spacing:1px; color:var(--muted); text-align:center; line-height:1.4; padding:12px; transition:border-color 0.3s,color 0.3s; }
     .cliente-logo:hover { border-color:var(--cyan); color:var(--cyan); }
+    @keyframes clientesScroll { 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
 
     /* TESTIMONIOS */
     #testimonios { background:linear-gradient(180deg,#060c14 0%,#0a1018 100%); overflow:hidden; }
@@ -205,16 +208,20 @@
       .nav-links{display:none;flex-direction:column;position:absolute;top:72px;left:0;right:0;background:rgba(10,14,20,0.98);padding:24px;gap:20px;border-bottom:1px solid rgba(0,212,255,0.1);}
       .nav-links.open{display:flex;}
       .hamburger{display:flex;}
-      #inicio{padding:100px 24px 60px;flex-direction:column;}
-      .hero-visual{margin-top:40px;}
-      .sphere-wrap{width:80vw;}
+      #inicio{padding:100px 24px 50px;flex-direction:column;min-height:auto;align-items:flex-start;}
+      .hero-visual{display:none;}
       section{padding:60px 24px;}
       #stats{padding:60px 24px;}
       footer{padding:40px 24px 20px;}
-      .footer-main{flex-direction:column;align-items:flex-start;}
+      .footer-main{flex-direction:column;align-items:center;text-align:center;}
+      .footer-links{flex-wrap:wrap;justify-content:center;gap:16px 24px;}
+      .footer-legal{flex-wrap:wrap;justify-content:center;gap:16px 24px;}
+      .footer-bottom{flex-direction:column-reverse;align-items:center;text-align:center;}
       .services-grid{grid-template-columns:1fr;}
       .team-grid{grid-template-columns:1fr;max-width:320px;}
       .testimonial-card{width:260px;min-width:260px;}
+      .cliente-logo{width:84px;height:84px;font-size:6.5px;}
+      .clientes-track{gap:18px;animation-duration:20s;}
     }
   </style>
 </head>
@@ -426,13 +433,21 @@
     <h2 class="section-title"><span class="accent">Marcas</span> que han confiado en nosotros</h2>
     <p class="section-sub">Negocios que decidieron crecer con estrategia.</p>
   </div>
-  <div class="clientes-logos reveal">
-    <div class="cliente-logo">EDÉN<br>FEST</div>
-    <div class="cliente-logo">YAMID<br>TRAINER</div>
-    <div class="cliente-logo">T3CHNO<br>City Medellín</div>
-    <div class="cliente-logo">PA'COLOMBIA<br>STEREO</div>
-    <div class="cliente-logo">ALMACÉN<br>OLÍMPICO</div>
-    <div class="cliente-logo">N·GOLD</div>
+  <div class="clientes-marquee reveal">
+    <div class="clientes-track">
+      <div class="cliente-logo">EDÉN<br>FEST</div>
+      <div class="cliente-logo">YAMID<br>TRAINER</div>
+      <div class="cliente-logo">T3CHNO<br>City Medellín</div>
+      <div class="cliente-logo">PA'COLOMBIA<br>STEREO</div>
+      <div class="cliente-logo">ALMACÉN<br>OLÍMPICO</div>
+      <div class="cliente-logo">N·GOLD</div>
+      <div class="cliente-logo" aria-hidden="true">EDÉN<br>FEST</div>
+      <div class="cliente-logo" aria-hidden="true">YAMID<br>TRAINER</div>
+      <div class="cliente-logo" aria-hidden="true">T3CHNO<br>City Medellín</div>
+      <div class="cliente-logo" aria-hidden="true">PA'COLOMBIA<br>STEREO</div>
+      <div class="cliente-logo" aria-hidden="true">ALMACÉN<br>OLÍMPICO</div>
+      <div class="cliente-logo" aria-hidden="true">N·GOLD</div>
+    </div>
   </div>
 </section>
 
