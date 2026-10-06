@@ -131,6 +131,20 @@
     .notice .link-btn { background:none; border:none; color: var(--muted); font-family:'Inter',sans-serif; font-size:15px; text-decoration:underline; cursor:pointer; margin-top:18px; }
     .hidden { display:none !important; }
 
+    /* Copia en PDF (solo al imprimir) */
+    #printView { display:none; }
+    @media print {
+      @page { margin: 18mm 16mm; }
+      body { background:#fff !important; color:#111 !important; font-size:12pt; }
+      body > *:not(#printView) { display:none !important; }
+      #printView { display:block; font-family: Arial, Helvetica, sans-serif; color:#111; }
+      #printView h1 { font-size:20pt; margin-bottom:4pt; }
+      #printView .pv-meta { font-size:10pt; color:#555; margin-bottom:16pt; }
+      #printView h2 { font-size:13pt; text-transform:uppercase; border-bottom:1.5pt solid #00a8cc; padding-bottom:3pt; margin:20pt 0 8pt; break-after:avoid; }
+      #printView .pv-q { font-weight:bold; font-size:11pt; margin:10pt 0 3pt; break-after:avoid; }
+      #printView .pv-a { font-size:11pt; line-height:1.5; white-space:pre-wrap; }
+    }
+
     footer { padding: 40px 60px; border-top: 1px solid rgba(0,212,255,0.08); text-align:center; }
     footer .logo-img { height: 34px; margin-bottom: 16px; }
     footer p { font-size:13px; color: var(--muted); }
@@ -211,6 +225,7 @@
         <div class="icon">&#10003;</div>
         <h2 data-i18n="done.title">¡Recibimos tu brief!</h2>
         <p data-i18n="done.text">Gracias por tomarte el tiempo. Vamos a revisar tus respuestas y te contactaremos para el siguiente paso.</p>
+        <button type="button" class="btn btn-primary" id="pdfBtn" data-i18n="done.pdf">Descargar PDF</button><br>
         <button type="button" class="link-btn" id="editAgainBtn" data-i18n="done.edit">Hacer cambios y enviar de nuevo</button>
       </div>
     </div>
@@ -443,6 +458,7 @@
     'done.title':'We got your brief!',
     'done.text':'Thank you for taking the time. We will review your answers and get in touch about the next step.',
     'done.edit':'Make changes and send again',
+    'done.pdf':'Download PDF',
     'off.title':'This link is not active',
     'off.text':'If you need access to the brief or the contract, message us and we will help you.',
     'off.btn':'Message us on WhatsApp',
@@ -945,6 +961,24 @@
     document.getElementById('doneView').classList.add('hidden');
     document.getElementById('formView').classList.remove('hidden');
     showStep(0, true);
+  });
+
+  /* Copia en PDF: arma una versión imprimible y abre "Guardar como PDF" */
+  document.getElementById('pdfBtn').addEventListener('click', () => {
+    let pv = document.getElementById('printView');
+    if (!pv){ pv = document.createElement('div'); pv.id = 'printView'; document.body.appendChild(pv); }
+    const fecha = new Date().toLocaleDateString('es-CO', { day:'2-digit', month:'long', year:'numeric' });
+    let h = `<h1>Brief estratégico de marca — ${esc(M)}</h1><p class="pv-meta">Cliente: ${esc(CONFIG.CLIENTE)} · ${esc(fecha)} · Área Digital</p>`;
+    let lastSec = '';
+    buildAnswers().forEach(r => {
+      if (r.seccion !== lastSec){ h += `<h2>${esc(r.seccion)}</h2>`; lastSec = r.seccion; }
+      h += `<p class="pv-q">${esc(r.pregunta)}</p><p class="pv-a">${esc(r.respuesta || '—')}</p>`;
+    });
+    pv.innerHTML = h;
+    const prevTitle = document.title;
+    document.title = 'Brief_' + M.normalize('NFD').replace(/[^\w]/g,'');
+    window.print();
+    setTimeout(() => { document.title = prevTitle; }, 1000);
   });
 
   /* =========================================================
