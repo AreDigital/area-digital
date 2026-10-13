@@ -127,6 +127,8 @@
     .opt input { width:22px; height:22px; flex-shrink:0; accent-color: var(--cyan); cursor:pointer; }
     .opt:has(input:checked) { border-color: var(--cyan); background: rgba(0,212,255,0.08); }
     .other-input, .detail-input { margin-top:10px; }
+    .dunno-btn { margin-top:8px; background:none; border:1px solid rgba(138,155,176,0.35); border-radius:20px; color: var(--muted); font-family:'Inter',sans-serif; font-size:14px; padding:7px 14px; cursor:pointer; transition: all 0.2s; }
+    .dunno-btn:hover { color: var(--cyan); border-color: var(--cyan); }
     .other-input { display:none; }
     .other-input.show { display:block; }
 
@@ -482,7 +484,7 @@
     ]},
     { es:'¿En qué podemos ayudarte?', en:'How can we help you?', q:[
       { id:'servicios', t:'checks', es:'Selecciona los servicios que te interesan.', en:'Select the services you are interested in.',
-        o:[['Crear una marca desde cero','Create a brand from scratch'],['Rediseñar mi marca','Redesign my brand'],['Diseño de logo e identidad visual','Logo and visual identity design'],['Creación de contenido','Content creation'],['Gestión de redes sociales','Social media management'],['Página web o Landing Page','Website or landing page'],['Publicidad en Meta Ads','Meta Ads advertising'],['Asesoría estratégica','Strategic consulting']], other:['Otro','Other'] }
+        o:[['Crear una marca desde cero','Create a brand from scratch'],['Rediseñar mi marca','Redesign my brand'],['Diseño de logo e identidad visual','Logo and visual identity design'],['Creación de contenido','Content creation'],['Gestión de redes sociales','Social media management'],['Página web o Landing Page','Website or landing page'],['Publicidad en Meta Ads','Meta Ads advertising'],['Asesoría estratégica','Strategic consulting'],['Prefiero que ustedes me recomienden','I’d rather you recommend']], other:['Otro','Other'] }
     ]},
     { es:'Cuéntanos un poco más', en:'Tell us a little more', q:[
       { id:'motivacion', t:'area', es:'¿Qué te motivó a iniciar este proyecto o qué te gustaría lograr con él?', en:'What motivated you to start this project, or what would you like to achieve with it?' }
@@ -504,17 +506,17 @@
     ]},
     { es:'Percepción y tono de tu marca', en:'Perception and tone of your brand', q:[
       { id:'percepcion', t:'checks', es:'¿Cómo te gustaría que se perciba tu marca?', en:'How would you like your brand to be perceived?',
-        o:[['Minimalista','Minimalist'],['Premium','Premium'],['Premium accesible','Accessible premium'],['Lujo / Exclusiva','Luxury / Exclusive'],['Artesanal','Handcrafted'],['Moderna / Tecnológica','Modern / Tech'],['Clásica / Tradicional','Classic / Traditional'],['Divertida / Juvenil','Fun / Youthful'],['Cercana / Accesible','Approachable / Accessible']], other:['Otra','Other'] },
+        o:[['Minimalista','Minimalist'],['Premium','Premium'],['Premium accesible','Accessible premium'],['Lujo / Exclusiva','Luxury / Exclusive'],['Artesanal','Handcrafted'],['Moderna / Tecnológica','Modern / Tech'],['Clásica / Tradicional','Classic / Traditional'],['Divertida / Juvenil','Fun / Youthful'],['Cercana / Accesible','Approachable / Accessible'],['Prefiero que ustedes me recomienden','I’d rather you recommend']], other:['Otra','Other'] },
       { id:'tono', t:'checks', es:'¿Cómo quieres que hable tu marca?', en:'How do you want your brand to speak?',
         hes:'Selecciona las opciones con las que más te identifiques.', hen:'Select the options you identify with the most.',
-        o:[['Cercana','Approachable'],['Elegante','Elegant'],['Divertida','Fun'],['Educativa','Educational'],['Directa','Direct'],['Sofisticada','Sophisticated'],['Inspiradora','Inspiring'],['Formal','Formal']], other:['Otra','Other'] }
+        o:[['Cercana','Approachable'],['Elegante','Elegant'],['Divertida','Fun'],['Educativa','Educational'],['Directa','Direct'],['Sofisticada','Sophisticated'],['Inspiradora','Inspiring'],['Formal','Formal'],['Prefiero que ustedes me recomienden','I’d rather you recommend']], other:['Otra','Other'] }
     ]},
     { es:'¿Con qué contamos actualmente?', en:'What do we have right now?', q:[
       { id:'activos', t:'checks', es:'Marca las opciones que ya tienes.', en:'Check the options you already have.',
         o:[['Logo','Logo'],['Manual de marca','Brand guidelines'],['Colores definidos','Defined colors'],['Tipografía','Typography'],['Fotografías','Photos'],['Videos','Videos'],['Página web','Website'],['Redes sociales','Social media'],['Dominio','Domain'],['Ninguno de los anteriores','None of the above']] }
     ]},
     { es:'Para finalizar', en:'To finish', q:[
-      { id:'algo_mas', t:'area', es:'¿Hay algo más que te gustaría contarnos o que consideres importante para este proyecto?', en:'Is there anything else you would like to tell us or that you consider important for this project?' }
+      { id:'algo_mas', t:'area', opt:true, es:'¿Hay algo más que te gustaría contarnos o que consideres importante para este proyecto?', en:'Is there anything else you would like to tell us or that you consider important for this project?' }
     ]}
   ];
 
@@ -538,8 +540,8 @@
     'ui.section':'Section', 'ui.of':'of', 'ui.saved':'✓ Saved on this device',
     'intro.welcome':'Welcome 👋',
     'intro.p1':'We’re glad you decided to work with us. This short form will help us get to know your project, understand your goals and build a strategy designed for your brand.',
-    'intro.p2':'Don’t worry if you can’t answer a question. You can leave it blank or answer it as best you can. We will help you complete the rest during the process.',
-    'intro.note':'Only the questions marked with <span class="q-req">*</span> are required. Your answers are saved automatically on this device, so you can close the page and continue later.',
+    'intro.p2':'Don’t worry if you can’t answer a question. Tap <strong>Not sure yet</strong> and continue; we’ll help you complete it during the process.',
+    'intro.note':'Questions marked with <span class="q-req">*</span> are required. Your answers are saved automatically on this device, so you can close the page and continue later.',
     'err.sendTitle':'Could not send.',
     'err.sendText':'Check your connection and try again. Your answers are still saved, nothing was lost.',
     'err.retry':'Try again',
@@ -568,11 +570,11 @@
   /* Textos que cambian desde JS */
   const UI_ES = { 'ui.prev':'&larr; Anterior', 'ui.next':'Siguiente &rarr;', 'ui.send':'Enviar brief', 'ui.sending':'Enviando…', 'ui.other':'¿Cuál?',
     'ui.choose':'Elegir este plan', 'ui.chosen':'✓ Plan elegido', 'ui.month':'/ mes', 'ui.planLabel':'Plan',
-    'c.send':'Aceptar y enviar contrato',
+    'c.send':'Aceptar y enviar contrato', 'ui.dunno':'No sé todavía', 'err.pick':'Elige al menos una opción.',
     'hint.brief':'Primero elige un plan.', 'hint.contract':'El contrato se habilita cuando envíes el brief.',
     'err.req':'Responde esta pregunta.', 'err.email':'Escribe un correo válido.', 'err.other':'Cuéntanos cuál es la otra opción.', 'err.accept':'Para enviar, marca que leíste y aceptas el contrato.' };
   Object.assign(translationsEN, { 'ui.prev':'&larr; Back', 'ui.next':'Next &rarr;', 'ui.send':'Send brief', 'ui.sending':'Sending…', 'ui.other':'Which one?',
-    'ui.choose':'Choose this plan', 'ui.chosen':'✓ Plan chosen', 'ui.month':'/ month', 'ui.planLabel':'Plan',
+    'ui.choose':'Choose this plan', 'ui.chosen':'✓ Plan chosen', 'ui.dunno':'Not sure yet', 'err.pick':'Choose at least one option.', 'ui.month':'/ month', 'ui.planLabel':'Plan',
     'hint.brief':'Choose a plan first.', 'hint.contract':'The contract unlocks when you send the brief.',
     'err.req':'Please answer this question.', 'err.email':'Please enter a valid email.', 'err.other':'Tell us which other option.' });
 
@@ -630,6 +632,7 @@
     });
   }
   const val = name => { const el = document.querySelector(`[name="${name}"]`); return el ? el.value.trim() : ''; };
+  const realVal = name => { const v = val(name); return (v === 'No sé todavía' || v === 'Not sure yet') ? '' : v; };
 
   /* =========================================================
      PLANES
@@ -688,8 +691,8 @@
         html += `<div class="intro">
           <p><strong data-i18n="intro.welcome">Bienvenido 👋</strong></p>
           <p data-i18n="intro.p1">Nos alegra que hayas decidido trabajar con nosotros. Este breve formulario nos ayudará a conocer mejor tu proyecto, entender tus objetivos y construir una estrategia pensada para tu marca.</p>
-          <p data-i18n="intro.p2">No te preocupes si no sabes responder alguna pregunta. Puedes dejarla en blanco o responderla de la mejor manera posible. Nosotros te ayudaremos a completar el resto durante el proceso.</p>
-          <p class="note" data-i18n="intro.note">Solo las preguntas con <span class="q-req">*</span> son obligatorias. Tus respuestas se guardan solas en este dispositivo: puedes cerrar la página y continuar después.</p>
+          <p data-i18n="intro.p2">No te preocupes si no sabes responder alguna pregunta. Toca <strong>No sé todavía</strong> y continúa; nosotros te ayudamos a completarla durante el proceso.</p>
+          <p class="note" data-i18n="intro.note">Las preguntas con <span class="q-req">*</span> son obligatorias. Tus respuestas se guardan solas en este dispositivo: puedes cerrar la página y continuar después.</p>
         </div>`;
       }
       sec.q.forEach(q => { if (si > 0) q.n = ++n; html += buildQuestion(q); });
@@ -705,7 +708,7 @@
 
   function buildQuestion(q){
     const key = q.id;
-    const req = !!q.req;
+    const req = !q.opt;
     translationsEN['b.' + key] = q.en;
     if (q.hen) translationsEN['b.' + key + 'h'] = q.hen;
     const num = q.n ? `<span class="q-num">${String(q.n).padStart(2,'0')}</span>` : '';
@@ -717,9 +720,11 @@
 
     if (q.t === 'area'){
       h += `<textarea id="f_${key}" name="${key}" rows="4"></textarea>`;
+      if (q.n) h += `<button type="button" class="dunno-btn" data-i18n="ui.dunno">No sé todavía</button>`;
     } else if (q.t === 'text' || q.t === 'email' || q.t === 'tel'){
       const im = q.t === 'email' ? ' inputmode="email"' : q.t === 'tel' ? ' inputmode="tel"' : q.num ? ' inputmode="numeric"' : '';
       h += `<input type="${q.t}" id="f_${key}" name="${key}"${q.ac ? ` autocomplete="${q.ac}"` : ''}${im} />`;
+      if (q.n) h += `<button type="button" class="dunno-btn" data-i18n="ui.dunno">No sé todavía</button>`;
     } else if (q.t === 'checks' || q.t === 'radio'){
       const type = q.t === 'checks' ? 'checkbox' : 'radio';
       h += `<div class="opts">`;
@@ -850,7 +855,7 @@
       else if (type === 'email' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){ ok = false; msgKey = 'err.email'; }
     } else if (type === 'checks' || type === 'radio'){
       const any = q.querySelectorAll('.opts input:checked').length > 0;
-      if (req && !any) ok = false;
+      if (req && !any){ ok = false; if (q.dataset.key !== 'c_acepto') msgKey = 'err.pick'; }
       else if (otherT && otherT.checked && !otherI.value.trim()){ ok = false; msgKey = 'err.other'; }
     }
     q.classList.toggle('invalid', !ok);
@@ -898,6 +903,11 @@
       showStep(currentStep + 1, true);
     } else if (e.target.closest('.btn-prev')){
       showStep(currentStep - 1, true);
+    } else if (e.target.closest('.dunno-btn')){
+      const q = e.target.closest('.q');
+      const field = q.querySelector('textarea, input');
+      field.value = t('ui.dunno');
+      field.dispatchEvent(new Event('input', { bubbles:true }));
     }
   });
   [briefForm, contractForm].forEach(f => {
@@ -976,7 +986,7 @@
     persistNow();
 
     const ok = await postJSON({
-      tipo:'brief', id:S.pendingBriefId, marca: val('marca') || '(sin marca)', cliente: val('nombre'),
+      tipo:'brief', id:S.pendingBriefId, marca: realVal('marca') || '(sin marca)', cliente: val('nombre'),
       plan: planText(), idioma: currentLang, respuestas: buildAnswers()
     });
     sendingBrief = false;
@@ -1022,7 +1032,7 @@
   const fechaHoy = () => new Date().toLocaleDateString('es-CO', { day:'numeric', month:'long', year:'numeric' });
 
   document.getElementById('pdfBtn').addEventListener('click', () => {
-    const marca = val('marca') || val('nombre');
+    const marca = realVal('marca') || val('nombre');
     let h = `<h1>Brief — ${esc(marca)}</h1><p class="pv-meta">${esc(val('nombre'))} · ${esc(fechaHoy())} · Área Digital</p>`;
     let lastSec = '';
     buildAnswers().forEach(r => {
@@ -1047,7 +1057,7 @@
     const pago = (collectValues().c_pago || [])[0] || '';
     return {
       nombre: val('c_nombre'), cc: val('c_cc'), ciudad: val('c_ciudad'), pago,
-      marca: val('marca'), correo: val('correo'), whatsapp: val('whatsapp'),
+      marca: realVal('marca'), correo: val('correo'), whatsapp: val('whatsapp'),
       planNombre: p ? p.name : '', planValor: p ? money(p.price) : '',
       planF: p ? p.f.map(f => f[0]) : [], addon: !!S.addon,
       total: money(planTotal()), fecha: fecha || fechaHoy()
