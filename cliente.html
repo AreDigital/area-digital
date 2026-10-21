@@ -1252,6 +1252,16 @@
   }
 
   (function init(){
+    // Si el brief ya se envió aparte (brief.html), este link permite entrar directo al Contrato
+    // usando ?plan=ID en la URL (ver PLANS para los ids), sin pedirle al cliente llenar el brief de nuevo.
+    try {
+      const qPlan = new URLSearchParams(location.search).get('plan');
+      if (qPlan && PLANS.find(p => p.id === qPlan)) {
+        S.plan = qPlan;
+        S.briefSent = true;
+        persistNow();
+      }
+    } catch(e){}
     restoreValues();
     refreshDynamic();
     refreshPlanUI();
