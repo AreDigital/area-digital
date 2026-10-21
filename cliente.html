@@ -396,11 +396,12 @@
           Bancolombia · <span data-i18n="cdone.savings">Cuenta de ahorros</span><br>
           N.º <strong>31616045604</strong><br>
           <span data-i18n="cdone.holder">Titular:</span> Isabella Posada Palacio<br>
-          <span data-i18n="cdone.value">Valor:</span> <strong id="payValue"></strong>
+          <span data-i18n="cdone.value">Valor a pagar ahora:</span> <strong id="payValue"></strong>
         </div>
         <div class="btn-stack">
           <a class="btn btn-primary" id="waProofBtn" href="#" target="_blank" rel="noopener" data-i18n="cdone.wa">Enviar comprobante por WhatsApp</a>
           <button type="button" class="btn btn-ghost" id="contractPdfBtn" data-i18n="cdone.pdf">Descargar contrato</button>
+          <button type="button" class="btn btn-ghost" id="cuentaCobroBtn" data-i18n="cdone.cobro">Descargar cuenta de cobro</button>
         </div>
       </div>
     </div>
@@ -460,6 +461,13 @@
       ] }
   ];
   const ADDON = { name:'Gemini Pro', price:50000 };
+
+  /* Cuánto se paga realmente cada vez, según la frecuencia elegida (el valor del plan es mensual) */
+  const FREQ_INFO = {
+    mensual:   { div:1, es:'/ mes',          en:'/ month' },
+    quincenal: { div:2, es:'cada quincena',  en:'every two weeks' },
+    semanal:   { div:4, es:'cada semana',    en:'every week' }
+  };
 
   /* =========================================================
      PREGUNTAS DEL BRIEF
@@ -561,8 +569,8 @@
     'c.send':'Accept and send contract',
     'cdone.title':'Contract sent!',
     'cdone.text':'We sent a copy to your email. The contract becomes effective with the first payment. When you make it, send us the receipt on WhatsApp.',
-    'cdone.payT':'Payment details', 'cdone.savings':'Savings account', 'cdone.holder':'Account holder:', 'cdone.value':'Amount:',
-    'cdone.wa':'Send receipt on WhatsApp', 'cdone.pdf':'Download contract',
+    'cdone.payT':'Payment details', 'cdone.savings':'Savings account', 'cdone.holder':'Account holder:', 'cdone.value':'Amount to pay now:',
+    'cdone.wa':'Send receipt on WhatsApp', 'cdone.pdf':'Download contract', 'cdone.cobro':'Download payment request',
     'off.title':'This link is not active',
     'off.text':'If you need access, message us and we will help you.',
     'off.btn':'Message us on WhatsApp'
@@ -1060,7 +1068,7 @@
       marca: realVal('marca'), correo: val('correo'), whatsapp: val('whatsapp'),
       planNombre: p ? p.name : '', planValor: p ? money(p.price) : '',
       planF: p ? p.f.map(f => f[0]) : [], addon: !!S.addon,
-      total: money(planTotal()), fecha: fecha || fechaHoy()
+      total: money(planTotal()), totalNum: planTotal(), fecha: fecha || fechaHoy()
     };
   }
 
@@ -1233,7 +1241,9 @@
     const d = S.contractData || contractData();
     document.getElementById('contractView').classList.add('hidden');
     document.getElementById('contractDoneView').classList.remove('hidden');
-    document.getElementById('payValue').innerHTML = esc(d.total) + ' <span data-i18n="ui.month">' + t('ui.month') + '</span>';
+    const freq = FREQ_INFO[d.pago] || FREQ_INFO.mensual;
+    const amountNow = money((d.totalNum != null ? d.totalNum : planTotal()) / freq.div);
+    document.getElementById('payValue').innerHTML = esc(amountNow) + ' <span class="pay-freq">' + esc(currentLang === 'en' ? freq.en : freq.es) + '</span>';
     const msg = `¡Hola! Soy ${d.nombre}${d.marca ? ' de ' + d.marca : ''}. Envío el comprobante del primer pago del plan ${d.planNombre}.`;
     document.getElementById('waProofBtn').href = 'https://wa.me/' + CONFIG.WHATSAPP + '?text=' + encodeURIComponent(msg);
     window.scrollTo({ top: 0, behavior:'smooth' });
@@ -1241,6 +1251,76 @@
   document.getElementById('contractPdfBtn').addEventListener('click', () => {
     const d = S.contractData || contractData();
     printHTML(blocksToHTML(contractBlocks(d), true), 'Contrato_AreaDigital_' + fileSafe(d.nombre));
+  });
+
+  /* ---------- Cuenta de cobro (PDF sencillo, no somos empresa constituida) ---------- */
+  function cuentaCobroHTML(d){
+    const freq = FREQ_INFO[d.pago] || FREQ_INFO.mensual;
+    const amountNow = money((d.totalNum != null ? d.totalNum : planTotal()) / freq.div);
+    const logoSrc = (document.querySelector('.logo-img') || {}).src || '';
+    return `<style>
+      .cc-wrap{max-width:620px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;}
+      .cc-head{display:flex;justify-content:space-between;align-items:center;border-bottom:2.5pt solid #0a2540;padding-bottom:10pt;margin-bottom:18pt;}
+      .cc-head img{height:34px;}
+      .cc-ttl{font-size:15pt;color:#0a2540;font-weight:800;}
+      .cc-date{font-size:9pt;color:#666;margin-top:2pt;}
+      .cc-row{display:flex;gap:14pt;margin-bottom:14pt;}
+      .cc-box{flex:1;border:1pt solid #ddd;border-radius:5pt;padding:9pt 11pt;}
+      .cc-lbl{font-size:8pt;text-transform:uppercase;letter-spacing:0.5pt;color:#888;margin-bottom:5pt;}
+      .cc-line{font-size:10.5pt;margin:2pt 0;}
+      .cc-value{text-align:center;background:#0a2540;color:#fff;border-radius:6pt;padding:14pt;margin:16pt 0;}
+      .cc-value .l{font-size:8.5pt;text-transform:uppercase;letter-spacing:1pt;opacity:0.85;}
+      .cc-value .a{font-size:22pt;font-weight:800;margin:3pt 0;}
+      .cc-value .f{font-size:9.5pt;opacity:0.9;}
+      .cc-sec{margin:12pt 0;}
+      .cc-pay{border:1pt solid #ddd;border-radius:5pt;padding:10pt 12pt;margin-top:6pt;}
+      .cc-foot{margin-top:22pt;font-size:8.5pt;color:#777;border-top:1pt solid #eee;padding-top:8pt;}
+    </style>
+    <div class="cc-wrap">
+      <div class="cc-head">
+        ${logoSrc ? `<img src="${logoSrc}" alt="Área Digital" />` : `<div class="cc-ttl">ÁREA DIGITAL</div>`}
+        <div style="text-align:right">
+          <div class="cc-ttl">Cuenta de cobro</div>
+          <div class="cc-date">${esc(d.fecha)}</div>
+        </div>
+      </div>
+      <div class="cc-row">
+        <div class="cc-box">
+          <div class="cc-lbl">Cobra</div>
+          <div class="cc-line"><strong>${esc(EMPRESA.TITULAR)}</strong></div>
+          <div class="cc-line">C.C. ${esc(EMPRESA.CC)}</div>
+          <div class="cc-line">Área Digital</div>
+        </div>
+        <div class="cc-box">
+          <div class="cc-lbl">A nombre de</div>
+          <div class="cc-line"><strong>${esc(d.nombre)}</strong></div>
+          <div class="cc-line">C.C./NIT ${esc(d.cc)}</div>
+          <div class="cc-line">${d.marca ? esc(d.marca) + ' · ' : ''}${esc(d.ciudad)}</div>
+        </div>
+      </div>
+      <div class="cc-value">
+        <div class="l">Valor a pagar</div>
+        <div class="a">${esc(amountNow)}</div>
+        <div class="f">${esc(freq.es)}</div>
+      </div>
+      <div class="cc-sec">
+        <div class="cc-lbl">Concepto</div>
+        <div class="cc-line">Pago ${esc(freq.es)} correspondiente al plan <strong>${esc(d.planNombre)}</strong> de manejo de redes sociales y marketing digital, prestado por Área Digital. Valor mensual del plan: ${esc(d.total)}.</div>
+      </div>
+      <div class="cc-pay">
+        <div class="cc-lbl">Forma de pago</div>
+        <div class="cc-line"><strong>Banco:</strong> ${esc(EMPRESA.BANCO)}</div>
+        <div class="cc-line"><strong>Tipo de cuenta:</strong> ${esc(EMPRESA.TIPO_CUENTA)}</div>
+        <div class="cc-line"><strong>Número de cuenta:</strong> ${esc(EMPRESA.CUENTA)}</div>
+        <div class="cc-line"><strong>Titular:</strong> ${esc(EMPRESA.TITULAR)}</div>
+        <div class="cc-line" style="margin-top:8pt">Una vez hecho el pago, envía el comprobante por WhatsApp al +57 304 479 0264. ¡Gracias!</div>
+      </div>
+      <div class="cc-foot">Documento informativo de cobro — no constituye factura electrónica. Área Digital.</div>
+    </div>`;
+  }
+  document.getElementById('cuentaCobroBtn').addEventListener('click', () => {
+    const d = S.contractData || contractData();
+    printHTML(cuentaCobroHTML(d), 'CuentaDeCobro_AreaDigital_' + fileSafe(d.nombre));
   });
 
   /* =========================================================
