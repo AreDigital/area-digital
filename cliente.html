@@ -1261,7 +1261,8 @@
     return `<style>
       .cc-wrap{max-width:620px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;}
       .cc-head{display:flex;justify-content:space-between;align-items:center;border-bottom:2.5pt solid #0a2540;padding-bottom:10pt;margin-bottom:18pt;}
-      .cc-head img{height:34px;}
+      .cc-head img{height:28px;display:block;}
+      .cc-logo-box{background:#0a2540;padding:8pt 16pt;border-radius:6pt;display:inline-flex;align-items:center;}
       .cc-ttl{font-size:15pt;color:#0a2540;font-weight:800;}
       .cc-date{font-size:9pt;color:#666;margin-top:2pt;}
       .cc-row{display:flex;gap:14pt;margin-bottom:14pt;}
@@ -1278,7 +1279,7 @@
     </style>
     <div class="cc-wrap">
       <div class="cc-head">
-        ${logoSrc ? `<img src="${logoSrc}" alt="Área Digital" />` : `<div class="cc-ttl">ÁREA DIGITAL</div>`}
+        ${logoSrc ? `<div class="cc-logo-box"><img src="${logoSrc}" alt="Área Digital" /></div>` : `<div class="cc-ttl">ÁREA DIGITAL</div>`}
         <div style="text-align:right">
           <div class="cc-ttl">Cuenta de cobro</div>
           <div class="cc-date">${esc(d.fecha)}</div>
