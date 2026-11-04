@@ -54,6 +54,9 @@
 
     /* Planes */
     .plans { display:grid; grid-template-columns: 1fr 1fr; gap:18px; margin-bottom: 22px; }
+    .currency-switch { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:10px; margin-bottom: 22px; }
+    .currency-switch .currency-label { font-size:14px; color: var(--muted); font-weight:600; }
+    .currency-switch .lang-toggle { font-size:15px; padding:8px 18px; }
     .plan { display:flex; flex-direction:column; background: var(--card-bg); border:1px solid rgba(0,212,255,0.14); border-radius:16px; padding:26px 22px; transition: border-color 0.2s, box-shadow 0.2s; }
     .plan.selected { border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan), 0 0 30px rgba(0,212,255,0.12); }
     .plan-label { font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color: var(--muted); }
@@ -239,9 +242,6 @@
   <button class="lang-toggle" id="langToggle" onclick="toggleLang()" aria-label="Switch language">
     <span class="lang-opt active" data-lang="es">ES</span><span class="lang-sep">/</span><span class="lang-opt" data-lang="en">EN</span>
   </button>
-  <button class="lang-toggle" id="currencyToggle" onclick="toggleCurrency()" aria-label="Switch currency" style="margin-left:8px;">
-    <span class="curr-opt active" data-currency="cop">COP</span><span class="lang-sep">/</span><span class="curr-opt" data-currency="usd">USD</span>
-  </button>
 </nav>
 
 <main>
@@ -270,6 +270,13 @@
     <div class="tab-panel" id="tab-planes">
       <h2 class="panel-title" data-i18n="plans.title">Manejo de redes sociales</h2>
       <p class="panel-sub" data-i18n="plans.sub">Elige el plan para tu marca. Después llenas el brief para que te conozcamos y, al final, revisas el contrato y arrancamos con la planeación.</p>
+
+      <div class="currency-switch">
+        <span class="currency-label" data-i18n="plans.currencyLabel">Ver precios en:</span>
+        <button class="lang-toggle" id="currencyToggle" onclick="toggleCurrency()" aria-label="Switch currency">
+          <span class="curr-opt active" data-currency="cop">COP</span><span class="lang-sep">/</span><span class="curr-opt" data-currency="usd">USD</span>
+        </button>
+      </div>
 
       <div class="plans" id="plansWrap"></div>
 
@@ -541,6 +548,7 @@
     'tab.plans':'Plans', 'tab.brief':'Brief', 'tab.contract':'Contract',
     'plans.title':'Social media management',
     'plans.sub':'Choose the plan for your brand. Then fill in the brief so we can get to know you, and at the end, review the contract and we\'ll get started with the planning.',
+    'plans.currencyLabel':'Show prices in:',
     'plans.addon':'<strong>Optional add-on (any plan):</strong> if you want Gemini Pro, we include it for <span id="addonPriceDisplay">$50,000</span> more per month, while you work with us and the Google promotion is active.',
     'plans.contentT':'About the content',
     'plans.contentP':'For your brand to build credibility, we work with your own material: photos, videos and logo. In some cases we use artificial intelligence, but we always make sure the content feels like your brand.',
