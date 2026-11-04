@@ -645,6 +645,9 @@ src="https://www.facebook.com/tr?id=1508165344684384&ev=PageView&noscript=1"
   window.addEventListener('scroll', () => {
     let current = '';
     sections.forEach(s => { if(navIds.includes(s.id) && window.scrollY >= s.offsetTop - 100) current = s.id; });
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 10) {
+      current = navIds[navIds.length - 1];
+    }
     navLinks.forEach(a => { a.classList.remove('active'); if(a.getAttribute('href')==='#'+current) a.classList.add('active'); });
   });
 
