@@ -183,6 +183,9 @@
     .notice .link-btn { background:none; border:none; color: var(--muted); font-family:'Inter',sans-serif; font-size:15px; text-decoration:underline; cursor:pointer; margin-top:18px; }
     .btn-stack { display:flex; flex-direction:column; align-items:center; gap:12px; }
     .btn-stack .btn { min-width: 280px; }
+    .btn-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; max-width:580px; }
+    .btn-stack .btn-row .btn { min-width:0; width:100%; padding:11px 12px; font-size:14px; letter-spacing:0.5px; text-align:center; line-height:1.25; }
+    .notice .btn-row .btn + .btn { margin-top:0; }
     .hidden { display:none !important; }
 
     /* PDF (solo al imprimir) */
@@ -229,6 +232,7 @@
       .step-nav { position: sticky; bottom: 0; background: rgba(10,14,20,0.97); padding: 14px 0 16px; margin-top: 30px; }
       .step-nav .btn { padding: 14px 12px; font-size: 16px; }
       .btn-stack .btn { min-width: 0; width:100%; }
+      .btn-stack .btn-row .btn { font-size:12px; letter-spacing:0.3px; padding:9px 6px; border-radius:22px; }
       footer { padding: 32px 20px; }
     }
   </style>
@@ -411,8 +415,10 @@
           <a class="btn btn-primary" id="waProofBtn" href="#" target="_blank" rel="noopener" data-i18n="cdone.wa">Enviar comprobante por WhatsApp</a>
           <p style="font-size:14px;color:var(--muted);margin:10px auto 0;" data-i18n="cdone.teamNote">Estamos atentos por si quieres revisar algo o tienes alguna duda.</p>
           <a class="btn btn-ghost" id="waTeamBtn" href="#" target="_blank" rel="noopener" data-i18n="cdone.team">Hablar con el equipo</a>
-          <button type="button" class="btn btn-ghost" id="contractPdfBtn" data-i18n="cdone.pdf">Descargar contrato</button>
-          <button type="button" class="btn btn-ghost" id="cuentaCobroBtn" data-i18n="cdone.cobro">Descargar cuenta de cobro</button>
+          <div class="btn-row">
+            <button type="button" class="btn btn-ghost" id="contractPdfBtn" data-i18n="cdone.pdf">Descargar contrato</button>
+            <button type="button" class="btn btn-ghost" id="cuentaCobroBtn" data-i18n="cdone.cobro">Descargar cuenta de cobro</button>
+          </div>
         </div>
       </div>
     </div>
