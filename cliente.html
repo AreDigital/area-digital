@@ -24,8 +24,8 @@
     .lang-toggle { display:flex; align-items:center; gap:4px; background:rgba(0,212,255,0.06); border:1px solid rgba(0,212,255,0.25); border-radius:20px; padding:6px 12px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; letter-spacing:1px; cursor:pointer; color:var(--muted); transition:border-color 0.2s; }
     .lang-toggle:hover { border-color:var(--cyan); }
     .lang-toggle .lang-sep { color:rgba(138,155,176,0.4); font-weight:400; }
-    .lang-toggle .lang-opt { transition:color 0.2s; }
-    .lang-toggle .lang-opt.active { color:var(--cyan); }
+    .lang-toggle .lang-opt, .lang-toggle .curr-opt { transition:color 0.2s; }
+    .lang-toggle .lang-opt.active, .lang-toggle .curr-opt.active { color:var(--cyan); }
 
     main { max-width: 860px; margin: 0 auto; padding: 130px 24px 100px; }
 
@@ -239,6 +239,9 @@
   <button class="lang-toggle" id="langToggle" onclick="toggleLang()" aria-label="Switch language">
     <span class="lang-opt active" data-lang="es">ES</span><span class="lang-sep">/</span><span class="lang-opt" data-lang="en">EN</span>
   </button>
+  <button class="lang-toggle" id="currencyToggle" onclick="toggleCurrency()" aria-label="Switch currency" style="margin-left:8px;">
+    <span class="curr-opt active" data-currency="cop">COP</span><span class="lang-sep">/</span><span class="curr-opt" data-currency="usd">USD</span>
+  </button>
 </nav>
 
 <main>
@@ -272,7 +275,7 @@
 
       <label class="addon">
         <input type="checkbox" id="addonCheck" />
-        <span data-i18n="plans.addon"><strong>Adicional opcional (cualquier plan):</strong> si deseas Gemini Pro, lo incluimos por $50.000 más al mes, mientras trabajes con nosotros y la promoción de Google esté vigente.</span>
+        <span data-i18n="plans.addon"><strong>Adicional opcional (cualquier plan):</strong> si deseas Gemini Pro, lo incluimos por <span id="addonPriceDisplay">$50.000</span> más al mes, mientras trabajes con nosotros y la promoción de Google esté vigente.</span>
       </label>
 
       <div class="info-block">
@@ -439,7 +442,7 @@
      PLANES
      ========================================================= */
   const PLANS = [
-    { id:'presencia', name:'Presencia Activa', price:800000,
+    { id:'presencia', name:'Presencia Activa', price:800000, priceUSD:250,
       f:[
         ['12 piezas de contenido al mes (2 a 3 publicaciones semanales)','12 content pieces per month (2 to 3 posts per week)'],
         ['Adaptación de las publicaciones a historias','Posts adapted to stories'],
@@ -448,7 +451,7 @@
         ['Acompañamiento','Guidance']
       ],
       note:['Hacemos la planeación y el diseño, y entregamos el contenido listo para publicar.','We handle the planning and design, and deliver the content ready to publish.'] },
-    { id:'gestion', name:'Gestión Completa', price:1600000,
+    { id:'gestion', name:'Gestión Completa', price:1600000, priceUSD:500,
       f:[
         ['Hasta 30 piezas de contenido al mes (posts, carruseles, reels e historias)','Up to 30 content pieces per month (posts, carousels, reels and stories)'],
         ['Planeación estratégica','Strategic planning'],
@@ -460,7 +463,7 @@
         ['ADN de marca, moodboard y manual de marca','Brand DNA, moodboard and brand guidelines']
       ] }
   ];
-  const ADDON = { name:'Gemini Pro', price:50000 };
+  const ADDON = { name:'Gemini Pro', price:50000, priceUSD:20 };
 
   /* Cuánto se paga realmente cada vez, según la frecuencia elegida (el valor del plan es mensual) */
   const FREQ_INFO = {
@@ -538,7 +541,7 @@
     'tab.plans':'Plans', 'tab.brief':'Brief', 'tab.contract':'Contract',
     'plans.title':'Social media management',
     'plans.sub':'Choose the plan for your brand. Then fill in the brief and, at the end, review the contract.',
-    'plans.addon':'<strong>Optional add-on (any plan):</strong> if you want Gemini Pro, we include it for $50,000 more per month, while you work with us and the Google promotion is active.',
+    'plans.addon':'<strong>Optional add-on (any plan):</strong> if you want Gemini Pro, we include it for <span id="addonPriceDisplay">$50,000</span> more per month, while you work with us and the Google promotion is active.',
     'plans.contentT':'About the content',
     'plans.contentP':'For your brand to build credibility, we work with your own material: photos, videos and logo. In some cases we use artificial intelligence, but we always make sure the content feels like your brand.',
     'plans.condT':'Conditions',
@@ -587,9 +590,11 @@
     'err.req':'Please answer this question.', 'err.email':'Please enter a valid email.', 'err.other':'Tell us which other option.' });
 
   let currentLang = 'es';
+  let currentCurrency = 'cop';
   const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   function t(key){ return currentLang === 'en' ? (translationsEN[key] || UI_ES[key] || '') : (UI_ES[key] || translationsES[key] || ''); }
-  const money = n => '$' + Math.round(n).toLocaleString('es-CO');
+  const money = n => currentCurrency === 'usd' ? 'US$' + Math.round(n).toLocaleString('en-US') : '$' + Math.round(n).toLocaleString('es-CO');
+  const priceOf = obj => currentCurrency === 'usd' ? obj.priceUSD : obj.price;
 
   /* =========================================================
      ESTADO (se guarda en este dispositivo)
@@ -646,10 +651,10 @@
      PLANES
      ========================================================= */
   function planObj(){ return PLANS.find(p => p.id === S.plan) || null; }
-  function planTotal(){ const p = planObj(); return p ? p.price + (S.addon ? ADDON.price : 0) : 0; }
+  function planTotal(){ const p = planObj(); return p ? priceOf(p) + (S.addon ? priceOf(ADDON) : 0) : 0; }
   function planText(){
     const p = planObj(); if (!p) return '';
-    return p.name + ' — ' + money(p.price) + ' / mes' + (S.addon ? ' + ' + ADDON.name + ' ' + money(ADDON.price) + ' / mes' : '');
+    return p.name + ' — ' + money(priceOf(p)) + ' / mes' + (S.addon ? ' + ' + ADDON.name + ' ' + money(priceOf(ADDON)) + ' / mes' : '');
   }
 
   function buildPlans(){
@@ -659,7 +664,7 @@
       h += `<div class="plan" data-plan="${p.id}">
         <span class="plan-label" data-i18n="ui.planLabel">Plan</span>
         <div class="plan-name">${esc(p.name)}</div>
-        <div class="plan-price">${money(p.price)} <small data-i18n="ui.month">/ mes</small></div>
+        <div class="plan-price">${money(priceOf(p))} <small data-i18n="ui.month">/ mes</small></div>
         <ul>`;
       p.f.forEach((f, i) => {
         translationsEN[`plan.${p.id}.f${i}`] = f[1];
@@ -788,11 +793,32 @@
     document.documentElement.lang = lang;
     document.querySelectorAll('.lang-opt').forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
     document.title = lang === 'en' ? 'Plans, Brief and Contract | Área Digital' : 'Planes, Brief y Contrato | Área Digital';
+    updateAddonPriceDisplay();
   }
   function toggleLang(){
     const next = currentLang === 'es' ? 'en' : 'es';
     setLanguage(next);
     try { localStorage.setItem('ad_lang', next); } catch(e){}
+  }
+
+  function updateAddonPriceDisplay(){
+    const el = document.getElementById('addonPriceDisplay');
+    if (el) el.textContent = money(priceOf(ADDON));
+  }
+
+  function setCurrency(cur){
+    currentCurrency = cur;
+    if (typeof buildPlans === 'function') buildPlans();
+    if (typeof refreshPlanUI === 'function') refreshPlanUI();
+    const bpn = document.getElementById('briefPlanName');
+    if (bpn) bpn.textContent = planText();
+    updateAddonPriceDisplay();
+    document.querySelectorAll('.curr-opt').forEach(o => o.classList.toggle('active', o.dataset.currency === cur));
+  }
+  function toggleCurrency(){
+    const next = currentCurrency === 'cop' ? 'usd' : 'cop';
+    setCurrency(next);
+    try { localStorage.setItem('ad_currency', next); } catch(e){}
   }
 
   /* =========================================================
@@ -1066,7 +1092,7 @@
     return {
       nombre: val('c_nombre'), cc: val('c_cc'), ciudad: val('c_ciudad'), pago,
       marca: realVal('marca'), correo: val('correo'), whatsapp: val('whatsapp'),
-      planNombre: p ? p.name : '', planValor: p ? money(p.price) : '',
+      planNombre: p ? p.name : '', planValor: p ? money(priceOf(p)) : '',
       planF: p ? p.f.map(f => f[0]) : [], addon: !!S.addon,
       total: money(planTotal()), totalNum: planTotal(), fecha: fecha || fechaHoy()
     };
@@ -1163,7 +1189,7 @@
     B.push({ h:'ANEXO — COTIZACIÓN' });
     B.push({ p:`Plan: ${F(d.planNombre, 'Plan')} — ${d.planValor} / mes` });
     if (d.planF.length) B.push({ li: d.planF });
-    if (d.addon) B.push({ p:`Adicional: ${ADDON.name} — ${money(ADDON.price)} / mes, mientras EL CLIENTE trabaje con el Contratista y la promoción de Google esté vigente.` });
+    if (d.addon) B.push({ p:`Adicional: ${ADDON.name} — ${money(priceOf(ADDON))} / mes, mientras EL CLIENTE trabaje con el Contratista y la promoción de Google esté vigente.` });
     B.push({ p:`Valor total mensual: ${F(d.total, 'Valor')}. Forma de pago: ${F(d.pago, 'por definir')}. La inversión en pauta se paga aparte.` });
     return B;
   }
@@ -1367,6 +1393,22 @@
       .catch(() => {
         if (!browserLang.startsWith('es')) setLanguage('en');
       });
+  })();
+
+  (function initCurrency(){
+    let saved = null;
+    try { saved = localStorage.getItem('ad_currency'); } catch(e){}
+    if (saved === 'usd' || saved === 'cop') { setCurrency(saved); return; }
+
+    fetch('https://ipapi.co/json/', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(data => {
+        let stillNoPref = false;
+        try { stillNoPref = !localStorage.getItem('ad_currency'); } catch(e){ stillNoPref = true; }
+        if (!stillNoPref) return;
+        if (data && data.country_code && data.country_code !== 'CO') setCurrency('usd');
+      })
+      .catch(() => {});
   })();
 </script>
 
