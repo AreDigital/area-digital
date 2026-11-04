@@ -162,7 +162,7 @@ const translationsEN = {
   'cdone.title':'Contract sent!',
   'cdone.text':'We sent a copy to your email. The contract becomes effective with the first payment. When you make it, send us the receipt on WhatsApp.',
   'cdone.payT':'Payment details', 'cdone.savings':'Savings account', 'cdone.holder':'Account holder:', 'cdone.value':'Amount to pay now:',
-  'cdone.wa':'Send receipt on WhatsApp', 'cdone.team':'Talk to the team', 'cdone.teamNote':'We’re here in case you’d like to go over anything or have a question.', 'cdone.pdf':'Download contract', 'cdone.cobro':'Download payment request',
+  'cdone.wa':'Send receipt', 'cdone.team':'Talk to the team', 'cdone.teamNote':'We’re here in case you’d like to go over anything or have a question.', 'cdone.pdf':'Contract', 'cdone.cobro':'Payment request',
   'off.title':'This link is not active',
   'off.text':'If you need access, message us and we will help you.',
   'off.btn':'Message us on WhatsApp'
