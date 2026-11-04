@@ -409,6 +409,8 @@
         </div>
         <div class="btn-stack">
           <a class="btn btn-primary" id="waProofBtn" href="#" target="_blank" rel="noopener" data-i18n="cdone.wa">Enviar comprobante por WhatsApp</a>
+          <p style="font-size:14px;color:var(--muted);margin:10px auto 0;" data-i18n="cdone.teamNote">Estamos atentos por si quieres revisar algo o tienes alguna duda.</p>
+          <a class="btn btn-ghost" id="waTeamBtn" href="#" target="_blank" rel="noopener" data-i18n="cdone.team">Hablar con el equipo</a>
           <button type="button" class="btn btn-ghost" id="contractPdfBtn" data-i18n="cdone.pdf">Descargar contrato</button>
           <button type="button" class="btn btn-ghost" id="cuentaCobroBtn" data-i18n="cdone.cobro">Descargar cuenta de cobro</button>
         </div>
@@ -435,7 +437,7 @@
     startTab: S => S.briefSent ? 'contrato' : (S.plan ? 'brief' : 'planes')
   };
 </script>
-<script src="shared-onboarding.js?v=1"></script>
+<script src="shared-onboarding.js?v=2"></script>
 
 </body>
 </html>

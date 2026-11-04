@@ -162,7 +162,7 @@ const translationsEN = {
   'cdone.title':'Contract sent!',
   'cdone.text':'We sent a copy to your email. The contract becomes effective with the first payment. When you make it, send us the receipt on WhatsApp.',
   'cdone.payT':'Payment details', 'cdone.savings':'Savings account', 'cdone.holder':'Account holder:', 'cdone.value':'Amount to pay now:',
-  'cdone.wa':'Send receipt on WhatsApp', 'cdone.pdf':'Download contract', 'cdone.cobro':'Download payment request',
+  'cdone.wa':'Send receipt on WhatsApp', 'cdone.team':'Talk to the team', 'cdone.teamNote':'We’re here in case you’d like to go over anything or have a question.', 'cdone.pdf':'Download contract', 'cdone.cobro':'Download payment request',
   'off.title':'This link is not active',
   'off.text':'If you need access, message us and we will help you.',
   'off.btn':'Message us on WhatsApp'
@@ -862,8 +862,18 @@ function showContractDone(){
   document.getElementById('payValue').innerHTML = esc(amountNow) + ' <span class="pay-freq">' + esc(currentLang === 'en' ? freq.en : freq.es) + '</span>';
   const msg = `¡Hola! Soy ${d.nombre}${d.marca ? ' de ' + d.marca : ''}. Envío el comprobante del primer pago del plan ${d.planNombre}.`;
   document.getElementById('waProofBtn').href = 'https://wa.me/' + CONFIG.WHATSAPP + '?text=' + encodeURIComponent(msg);
+  setTeamLink();
   window.scrollTo({ top: 0, behavior:'smooth' });
 }
+function setTeamLink(){
+  const d = S.contractData || contractData();
+  const msg = currentLang === 'en'
+    ? `Hi! I'm ${d.nombre}${d.marca ? ' from ' + d.marca : ''}. I've sent you the brief and the contract. Can we coordinate the next steps?`
+    : `¡Hola! Soy ${d.nombre}${d.marca ? ' de ' + d.marca : ''}. Ya les envié el brief y el contrato. ¿Podemos coordinar los siguientes pasos?`;
+  document.getElementById('waTeamBtn').href = 'https://wa.me/' + CONFIG.WHATSAPP + '?text=' + encodeURIComponent(msg);
+}
+// se recalcula al hacer clic, por si el cliente cambió de idioma después de enviar
+document.getElementById('waTeamBtn').addEventListener('click', setTeamLink);
 document.getElementById('contractPdfBtn').addEventListener('click', () => {
   const d = S.contractData || contractData();
   printHTML(blocksToHTML(contractBlocks(d), true), 'Contrato_AreaDigital_' + fileSafe(d.nombre));
